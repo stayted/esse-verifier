@@ -1,0 +1,28 @@
+{
+  "name": "esse-verifier",
+  "version": "0.0.1",
+  "description": "Esse Verifier",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stayted/esse-verifier.git"
+  },
+  "author": "Silvio Benvegnù",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stayted/esse-verifier/issues"
+  },
+  "homepage": "https://github.com/stayted/esse-verifier#readme",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "base64url": "^3.0.1",
+    "cheerio": "^1.0.0-rc.9",
+    "hash.js": "^1.1.7",
+    "node-rsa": "^1.0.2",
+    "url": "^0.11.0",
+    "valid-url": "^1.0.9"
+  }
+}
