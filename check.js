@@ -4,8 +4,8 @@ const data = require('./package.json');
 const validator = require('./classes/validator');
 
 console.log(`
-ESSE-VERIFIER (v${data.version})
-######################
+ ESSE-VERIFIER (v${data.version})
+ ######################
 `);
 
 if ( process.argv.length === 3 ) {
@@ -30,7 +30,10 @@ usage: check.js <item_url>
   Error: ${ error }
 ###
         `);
+        console.log( error );
     }
+
+
 
     console.log('');
 

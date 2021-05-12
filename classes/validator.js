@@ -3,7 +3,10 @@
 const axios     = require('axios').default;
 const cheerio   = require('cheerio');
 
-const url_manager = require('./url_manager');
+const url_manager         = require('./url');
+const item_manager        = require('./item');
+const transaction_manager = require('./transaction');
+const spacer              = require('./string_spacer');
 
 class validator {
 
@@ -15,6 +18,9 @@ class validator {
         this.url.validate();
         await this._get_node_url();
         await this._get_item();
+        await this._get_transaction();
+        this.item.validate( this.public_key );
+        this.transaction.validate();
     }
 
     // private methods ////////////////////////////
@@ -22,33 +28,51 @@ class validator {
     async _get_node_url() {
         var html_page = await axios.get( `${ this.url }` )
             .then( response => {
-                console.log('  - download web page: OK');
+                console.log( spacer('download web page') );
                 return response.data;
             })
             .catch( error => {
-                console.log('  - download web page: error');
+                console.log( spacer('download web page', false) );
                 throw `error downloading viewer page: ${ error }`;
             });
         this._extract_node_url( html_page );
     }
 
     async _get_item() {
-        this.item = await axios.get( this.item_url )
+        var item = await axios.get( this.item_url )
             .then( response => {
-                console.log('  - download item: OK');
-                return response.data;
+                if ( response.data.length === 1 ) {
+                    console.log( spacer('download item') );
+                    return response.data[0];
+                } else {
+                    throw `expected one item, received ${ response.data.length }`;
+                }
             })
             .catch( error => {
-                console.log('  - download item: error');
+                    console.log( spacer('download item', false) );
                 throw `error downloading item: ${ error }`;
             });
+        this.item = new item_manager( item );
     }
 
-    _get_transaction() {}
-
-    _validate_item_id() {}
-
-    _validate_transaction_id() {}
+    async _get_transaction() {
+        var transaction_url = this.node_url + '/trx/sbi/' + this.item.id;
+        var transaction = await axios.get( transaction_url )
+            .then( response => {
+                if ( response.data.length === 1 ) {
+                    console.log( spacer('download transaction') );
+                    return response.data[0];
+                } else {
+                    throw `expected one item, received ${ response.data.length }`;
+                }
+            })
+            .catch( error => {
+                    console.log( spacer('download transaction', false) );
+                throw `error downloading transaction: ${ error }`;
+            });
+        console.log( transaction );
+        this.transaction = new transaction_manager( transaction );
+    }
 
     _get_block() {} // include la ricevuta
 
@@ -58,9 +82,9 @@ class validator {
         try {
             var $ = cheerio.load( html );
             this.node_url = $('#node_url').text();
-            console.log('  - extract node url: OK');
+            console.log( spacer('extract node url') );
         } catch ( error ) {
-            console.log('  - extract node url: ERROR');
+            console.log( spacer('extract node url', error) );
             throw `error extracting node url: ${ error }`;
         }
     }
@@ -70,6 +94,11 @@ class validator {
     get item_url() {
         return this.node_url + '/item?code=' + this.url.code;
     }
+
+    get public_key() {
+        return this.transaction.public_key;
+    }
+   
 
 }
 

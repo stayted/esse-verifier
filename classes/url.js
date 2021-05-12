@@ -3,6 +3,8 @@
 const valid_url = require('valid-url');
 const url       = require('url');
 
+const spacer = require('./string_spacer');
+
 class url_manager {
 
     constructor( url ) {
@@ -13,14 +15,14 @@ class url_manager {
 
     validate() {
         if ( valid_url.isUri( this.url ) === false ) {
-            console.log('  - validate url: ERROR');
+            console.log( spacer('validate url', false) );
             throw 'param doesn\t seem to be a valid url';
         }
         var params = this.qry_params;
         if ( Object.keys( params ).length === 1 && Object.keys( params )[0] === 'code' && params['code'] ) {
-            console.log('  - validate url: OK');
+            console.log( spacer('validate url') );
         } else {
-            console.log('  - validate url: ERROR');
+            console.log( spacer('validate url', false) );
             throw 'url must contain a single query parameter: code';
         }
     }
