@@ -115,6 +115,10 @@ class validator {
     get public_key() {
         return this.transaction.public_key;
     }
+
+    get response() {
+        return this.logger.response;
+    }
    
 
 }
