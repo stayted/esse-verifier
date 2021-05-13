@@ -12,7 +12,7 @@ cd esse-verifier
 node check.js <url_from_qrcode>
 ```
 
-### Use it in your script
+### In your script
 
 Add it to your package.json dependencies:
 
@@ -27,7 +27,7 @@ Install it:
 
 `npm install esse-verifier`
 
-Use it in your script:
+Example:
 
 ```
 
