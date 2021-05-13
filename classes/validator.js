@@ -6,7 +6,7 @@ const cheerio   = require('cheerio');
 const url_manager         = require('./url');
 const item_manager        = require('./item');
 const transaction_manager = require('./transaction');
-const spacer              = require('./string_spacer');
+const logger              = require('./logger');
 
 class validator {
 
@@ -28,11 +28,11 @@ class validator {
     async _get_node_url() {
         var html_page = await axios.get( `${ this.url }` )
             .then( response => {
-                console.log( spacer('download web page') );
+                logger('download web page');
                 return response.data;
             })
             .catch( error => {
-                console.log( spacer('download web page', false) );
+                logger('download web page', false);
                 throw `error downloading viewer page: ${ error }`;
             });
         this._extract_node_url( html_page );
@@ -42,14 +42,14 @@ class validator {
         var item = await axios.get( this.item_url )
             .then( response => {
                 if ( response.data.length === 1 ) {
-                    console.log( spacer('download item') );
+                    logger('download item');
                     return response.data[0];
                 } else {
                     throw `expected one item, received ${ response.data.length }`;
                 }
             })
             .catch( error => {
-                    console.log( spacer('download item', false) );
+                    logger('download item', false);
                 throw `error downloading item: ${ error }`;
             });
         this.item = new item_manager( item );
@@ -60,17 +60,16 @@ class validator {
         var transaction = await axios.get( transaction_url )
             .then( response => {
                 if ( response.data.length === 1 ) {
-                    console.log( spacer('download transaction') );
+                    logger('download transaction');
                     return response.data[0];
                 } else {
                     throw `expected one item, received ${ response.data.length }`;
                 }
             })
             .catch( error => {
-                    console.log( spacer('download transaction', false) );
+                    logger('download transaction', false);
                 throw `error downloading transaction: ${ error }`;
             });
-        console.log( transaction );
         this.transaction = new transaction_manager( transaction );
     }
 
@@ -82,9 +81,9 @@ class validator {
         try {
             var $ = cheerio.load( html );
             this.node_url = $('#node_url').text();
-            console.log( spacer('extract node url') );
+            logger('extract node url');
         } catch ( error ) {
-            console.log( spacer('extract node url', error) );
+            logger('extract node url', error);
             throw `error extracting node url: ${ error }`;
         }
     }

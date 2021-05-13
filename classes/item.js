@@ -3,7 +3,7 @@
 const rsa       = require('node-rsa');
 const base64url = require('base64url');
 
-const spacer = require('./string_spacer');
+const logger = require('./logger');
 
 class item {
 
@@ -21,13 +21,13 @@ class item {
             var b64sign = base64url.toBase64( this.id );
             var check = manager.verify( this.original_string, b64sign, 'utf8', 'base64' );
         } catch ( error ) {
-            console.log( spacer('verify item signature', false) );
+            logger('verify item signature', false);
             throw `error verifying item signature: ${ error }`;
         }
         if ( check === true ) {
-            console.log( spacer('verify item signature') );
+            logger('verify item signature');
         } else if ( check === false ) {
-            console.log( spacer('verify item signature', false) );
+            logger('verify item signature', false);
         }
     }
 

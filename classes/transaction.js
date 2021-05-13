@@ -4,7 +4,7 @@ const rsa       = require('node-rsa');
 const base64url = require('base64url');
 const hash      = require('hash.js')
 
-const spacer = require('./string_spacer');
+const logger = require('./logger');
 
 class transaction {
 
@@ -19,19 +19,19 @@ class transaction {
     validate() {
         try {
             var manager = new rsa();
-            console.log( 'signature', this.id );
-            console.log( 'string   ', this.original_string );
+            //console.log( 'signature', this.id );
+            //console.log( 'string   ', this.original_string );
             manager.importKey( this.public_key );
             //var b64sign = base64url.toBase64( this.id );
             var check = manager.verify( this.original_string, this.id, 'utf8', 'base64' );
         } catch ( error ) {
-            console.log( spacer('verify transaction signature', false) );
+            logger('verify transaction signature', false);
             throw `error verifying transaction signature: ${ error }`;
         }
         if ( check === true ) {
-            console.log( spacer('verify transaction signature') );
+            logger('verify transaction signature');
         } else if ( check === false ) {
-            console.log( spacer('verify transaction signature', false) );
+            logger('verify transaction signature', false);
         }
     }
 
@@ -47,9 +47,12 @@ class transaction {
         keys.sort();
         var string = '';
         for ( var i = 0; i < keys.length; i++ ) {
+            if ( typeof this.payload[ keys[ i ] ] === 'string' ) {
+                var match = this.payload[ keys[ i ] ].match( /^\d{4}\-\d{2}\-\d{2}T\d{2}:\d{2}:\d{2}\.\d{1,3}.{1,3}$/ );
+                if ( match ) { string += `"${ this.payload[ keys[ i ] ] }"`; continue }
+            }
             string += typeof this.payload[ keys[ i ] ] === 'object' ? JSON.stringify( this.payload[ keys[ i ] ] ) : this.payload[ keys[ i ] ];
         }
-        console.log( string );
         return hash.sha256().update( string ).digest('hex');
     }
 

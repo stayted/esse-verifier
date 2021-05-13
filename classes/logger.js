@@ -2,7 +2,7 @@
 
 const max = 28;
 
-function string_spacer( input, response = true ) {
+function logger( input, response = true ) {
 
     var string = ` - ${ input }`;
     for ( var i = max - input.length; i > -1; i-- ) {
@@ -10,9 +10,9 @@ function string_spacer( input, response = true ) {
     }
     string += ': ';
     string += response === true ? 'OK' : 'ERROR';
-    return string;
+    console.log( string );
 
 }
 
-module.exports = string_spacer;
+module.exports = logger;
 
