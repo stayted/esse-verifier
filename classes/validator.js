@@ -119,6 +119,10 @@ class validator {
     get response() {
         return this.logger.response;
     }
+
+    get errors() {
+        return this.logger.errors;
+    }
    
 
 }

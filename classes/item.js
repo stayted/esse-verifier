@@ -22,7 +22,7 @@ class item {
             var b64sign = base64url.toBase64( this.id );
             var check = manager.verify( this.original_string, b64sign, 'utf8', 'base64' );
         } catch ( error ) {
-            this.logger.p('verify item signature', false);
+            this.logger.p('verify item signature', false, error);
             throw `error verifying item signature: ${ error }`;
         }
         if ( check === true ) {

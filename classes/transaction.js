@@ -21,7 +21,7 @@ class transaction {
             manager.importKey( this.public_key );
             var check = manager.verify( this.original_string, this.signature, 'utf8', 'base64' );
         } catch ( error ) {
-            this.logger.p('verify transaction signature', false);
+            this.logger.p('verify transaction signature', false, error);
             throw `error verifying transaction signature: ${ error }`;
         }
         if ( check === true ) {

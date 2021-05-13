@@ -30,7 +30,7 @@ class block {
             this.tree = new mtree( this.leaves );
             var root = this.tree.get_root();
         } catch ( error ) {
-            this.logger.p('verify merkle tree', false);
+            this.logger.p('verify merkle tree', false, error);
             throw `error verifying merkle tree: ${ error }`;
         }
         if ( root === this.merkle_root && this.merkle_root === this.payload.receipt.btc_receipt.hash ) {
@@ -56,7 +56,7 @@ class block {
                 return response.data;
             })
             .catch( error => {
-                this.logger.p('download btc page', false);
+                this.logger.p('download btc page', false, error);
                 throw `error downloading viewer page: ${ error }`;
             });
         var btc_merkle_root = this._extract_btc_merkle_root( html_page );

@@ -1,6 +1,6 @@
 {
   "name": "esse-verifier",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Esse Verifier",
   "main": "main.js",
   "scripts": {
