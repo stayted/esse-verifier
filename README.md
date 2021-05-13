@@ -9,6 +9,7 @@
 ```
 git clone https://github.com/stayted/esse-verifier
 cd esse-verifier
+npm install
 node check.js <url_from_qrcode>
 ```
 
