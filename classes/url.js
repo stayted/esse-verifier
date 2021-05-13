@@ -8,21 +8,22 @@ const logger = require('./logger');
 class url_manager {
 
     constructor( url ) {
-        this.url = url;
+        this.url    = url;
+        this.logger = new logger();
     }
 
     // public methods /////////////////////////////
 
     validate() {
         if ( valid_url.isUri( this.url ) === false ) {
-            logger('validate url', false);
+            this.logger.p('validate url', false);
             throw 'param doesn\t seem to be a valid url';
         }
         var params = this.qry_params;
         if ( Object.keys( params ).length === 1 && Object.keys( params )[0] === 'code' && params['code'] ) {
-            logger('validate url');
+            this.logger.p('validate url');
         } else {
-            logger('validate url', false);
+            this.logger.p('validate url', false);
             throw 'url must contain a single query parameter: code';
         }
     }

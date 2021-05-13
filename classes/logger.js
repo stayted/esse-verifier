@@ -1,16 +1,32 @@
 ////////////////////////////////////////
 
+// this class is singleton
+
 const max = 28;
 
-function logger( input, response = true ) {
+class logger {
 
-    var string = ` - ${ input }`;
-    for ( var i = max - input.length; i > -1; i-- ) {
-        string += ' ';
+    constructor( print = false ) {
+        if ( logger.instance ) {
+            return logger.instance;
+        }
+        this.print      = print;
+        this.response   = true;
+        logger.instance = this;
     }
-    string += ': ';
-    string += response === true ? 'OK' : 'ERROR';
-    console.log( string );
+
+    p( input, response = true ) {
+        if ( response === false ) { this.response = false; }
+        if ( this.print ) {
+            var string = ` - ${ input }`;
+            for ( var i = max - input.length; i > -1; i-- ) {
+                string += ' ';
+            }
+            string += ': ';
+            string += response === true ? 'OK' : 'ERROR';
+            console.log( string );
+        }
+    }
 
 }
 

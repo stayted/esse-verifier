@@ -18,14 +18,17 @@ if ( process.argv.length === 3 ) {
 
 ( async () => {
 
-    var obj = new validator( item_url );
+    var obj = new validator( item_url, true );
     try {
-        await obj.check();
+        var response = await obj.check();
     } catch ( error ) {
+        console.log( error );
         console.log('\n ###');
         console.log(`  Error: ${ error }`);
         console.log(' ###');
     }
+    console.log('');
+    console.log(' RESPONSE: ', response ? 'OK' : 'ERROR');
     console.log('');
 
 })();

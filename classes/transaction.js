@@ -3,13 +3,14 @@
 const rsa  = require('node-rsa');
 const hash = require('hash.js')
 
-const logger = require('./logger');
+const logger  = require('./logger');
 
 class transaction {
 
     constructor( payload ) {
-        this.payload = payload;
+        this.payload         = payload;
         this.excluded_fields = [ '_id', 'txid', 'signature' ];
+        this.logger          = new logger();
     }
 
     // public methods /////////////////////////////
@@ -20,13 +21,13 @@ class transaction {
             manager.importKey( this.public_key );
             var check = manager.verify( this.original_string, this.signature, 'utf8', 'base64' );
         } catch ( error ) {
-            logger('verify transaction signature', false);
+            this.logger.p('verify transaction signature', false);
             throw `error verifying transaction signature: ${ error }`;
         }
         if ( check === true ) {
-            logger('verify transaction signature');
+            this.logger.p('verify transaction signature');
         } else if ( check === false ) {
-            logger('verify transaction signature', false);
+            this.logger.p('verify transaction signature', false);
         }
     }
 

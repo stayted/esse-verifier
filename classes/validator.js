@@ -11,7 +11,10 @@ const block_manager = require('./block');
 
 class validator {
 
-    constructor( url ) { this.url = new url_manager( url ); }
+    constructor( url, print_log = false ) {
+        this.logger = new logger( print_log );
+        this.url    = new url_manager( url );
+    }
 
     // public methods /////////////////////////////
 
@@ -24,6 +27,7 @@ class validator {
         this.transaction.validate();
         await this._get_block();
         await this.block.validate();
+        return this.logger.response;
     }
 
     // private methods ////////////////////////////
@@ -31,11 +35,11 @@ class validator {
     async _get_node_url() {
         var html_page = await axios.get( `${ this.url }` )
             .then( response => {
-                logger('download web page');
+                this.logger.p('download web page');
                 return response.data;
             })
             .catch( error => {
-                logger('download web page', false);
+                this.logger.p('download web page', false);
                 throw `error downloading viewer page: ${ error }`;
             });
         this._extract_node_url( html_page );
@@ -45,14 +49,14 @@ class validator {
         var item = await axios.get( this.item_url )
             .then( response => {
                 if ( response.data.length === 1 ) {
-                    logger('download item');
+                    this.logger.p('download item');
                     return response.data[0];
                 } else {
                     throw `expected one item, received ${ response.data.length }`;
                 }
             })
             .catch( error => {
-                    logger('download item', false);
+                    this.logger.p('download item', false);
                 throw `error downloading item: ${ error }`;
             });
         this.item = new item_manager( item );
@@ -63,14 +67,14 @@ class validator {
         var transaction = await axios.get( transaction_url )
             .then( response => {
                 if ( response.data.length === 1 ) {
-                    logger('download transaction');
+                    this.logger.p('download transaction');
                     return response.data[0];
                 } else {
                     throw `expected one item, received ${ response.data.length }`;
                 }
             })
             .catch( error => {
-                logger('download transaction', false);
+                this.logger.p('download transaction', false);
                 throw `error downloading transaction: ${ error }`;
             });
         this.transaction = new tx_manager( transaction );
@@ -80,12 +84,12 @@ class validator {
         var block_url = this.node_url + '/block/sbt/' + this.transaction.id;
         var block = await axios.get( block_url )
             .then( response => {
-                logger('download block');
+                this.logger.p('download block');
                 return response.data; 
             })
             .catch( error => {
                 console.log( error );
-                logger('download block', false);
+                this.logger.p('download block', false);
                 throw `error downloading block: ${ error }`;
             });
         this.block = new block_manager( block, this.transaction.id );
@@ -95,9 +99,9 @@ class validator {
         try {
             var $ = cheerio.load( html );
             this.node_url = $('#node_url').text();
-            logger('extract node url');
+            this.logger.p('extract node url');
         } catch ( error ) {
-            logger('extract node url', error);
+            this.logger.p('extract node url', error);
             throw `error extracting node url: ${ error }`;
         }
     }

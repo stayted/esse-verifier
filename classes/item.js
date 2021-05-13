@@ -8,8 +8,9 @@ const logger = require('./logger');
 class item {
 
     constructor( payload ) {
-        this.payload = payload;
+        this.payload         = payload;
         this.excluded_fields = ['_id', '@id', '@updates', '@updated', '@update-description' ];
+        this.logger          = new logger();
     }
 
     // public methods /////////////////////////////
@@ -21,13 +22,13 @@ class item {
             var b64sign = base64url.toBase64( this.id );
             var check = manager.verify( this.original_string, b64sign, 'utf8', 'base64' );
         } catch ( error ) {
-            logger('verify item signature', false);
+            this.logger.p('verify item signature', false);
             throw `error verifying item signature: ${ error }`;
         }
         if ( check === true ) {
-            logger('verify item signature');
+            this.logger.p('verify item signature');
         } else if ( check === false ) {
-            logger('verify item signature', false);
+            this.logger.p('verify item signature', false);
         }
     }
 

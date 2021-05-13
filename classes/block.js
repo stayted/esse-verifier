@@ -11,6 +11,7 @@ class block {
     constructor( payload, transaction_id ) {
         this.payload        = payload;
         this.transaction_id = transaction_id;
+        this.logger         = new logger();
     }
 
     // public methods /////////////////////////////
@@ -29,21 +30,21 @@ class block {
             this.tree = new mtree( this.leaves );
             var root = this.tree.get_root();
         } catch ( error ) {
-            logger('verify merkle tree', false);
+            this.logger.p('verify merkle tree', false);
             throw `error verifying merkle tree: ${ error }`;
         }
         if ( root === this.merkle_root && this.merkle_root === this.payload.receipt.btc_receipt.hash ) {
-            logger('verify merkle tree' );
+            this.logger.p('verify merkle tree');
         } else {
-            logger('verify merkle tree', false);
+            this.logger.p('verify merkle tree', false);
         }
     }
 
     _verify_block_status() {
         if ( this.status === 'locked' ) {
-            logger('verify block status');
+            this.logger.p('verify block status');
         } else {
-            logger('verify block status', false);
+            this.logger.p('verify block status', false);
             throw 'il blocco non è stato ancora notarizzato, verifica interrotta.';
         }
     }
@@ -51,18 +52,18 @@ class block {
     async _verify_btc_page_details() {
         var html_page = await axios.get( this.btc_block_url )
             .then( response => {
-                logger('download btc page');
+                this.logger.p('download btc page');
                 return response.data;
             })
             .catch( error => {
-                logger('download btc page', false);
+                this.logger.p('download btc page', false);
                 throw `error downloading viewer page: ${ error }`;
             });
         var btc_merkle_root = this._extract_btc_merkle_root( html_page );
         if ( btc_merkle_root === this.btc_merkle_root ) {
-            logger('verify btc merkle root');
+            this.logger.p('verify btc merkle root');
         } else {
-            logger('verify btc merkle root', false);
+            this.logger.p('verify btc merkle root', false);
         }
     }
 
@@ -76,15 +77,15 @@ class block {
             }
         }
         if ( merkle_row === null ) {
-            logger('search for btc merkle root', false);
+            this.logger.p('search for btc merkle root', false);
             throw 'correct row not found';
         }
         var match = merkle_row.match(/.+<dd class="text-muted"> {0,1}([a-z0-9]+) {0,1}<\/dd>/);
         if ( !match ) {
-            logger('search for btc merkle root', false);
+            this.logger.p('search for btc merkle root', false);
             throw 'correct row not found';
         }
-        logger('search for btc merkle root');
+        this.logger.p('search for btc merkle root');
         return match[1];
     }
 
@@ -92,9 +93,9 @@ class block {
         // verify esse_merkle_root receipt
         var is_valid = new chain( this.btc_merkle_root, this.receipt, this.merkle_root ).verify();
         if ( is_valid === false ) {
-            logger('verify chainpoint receipt', false);
+            this.logger.p('verify chainpoint receipt', false);
         }
-        logger('verify chainpoint receipt');
+        this.logger.p('verify chainpoint receipt');
 
         // verify single tx receipt
         //var tree = new merkle( block.leaves );
@@ -103,9 +104,9 @@ class block {
         receipt.branches[0].ops = receipt.branches[0].ops.concat( temp_receipt.siblings );
         var is_valid = new chain( this.btc_merkle_root, receipt, this.transaction_id ).verify();
         if ( is_valid === false ) {
-            logger('verify transaction receipt', false);
+            this.logger.p('verify transaction receipt', false);
         }
-        logger('verify transaction receipt');
+        this.logger.p('verify transaction receipt');
     }
 
     // getters & setters //////////////////////////
