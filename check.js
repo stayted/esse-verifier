@@ -22,14 +22,18 @@ if ( process.argv.length === 3 ) {
     try {
         var response = await obj.check();
     } catch ( error ) {
-        console.log( error );
         console.log('\n ###');
         console.log(`  Error: ${ error }`);
         console.log(' ###');
     }
     console.log('');
-    console.log(' RESPONSE: ', response ? 'OK' : 'ERROR');
+    console.log(' RESPONSE:', response ? 'OK' : 'ERROR');
     console.log('');
+    if ( obj.errors.length > 0 ) {
+        console.log(`${ obj.errors.length } errors found.`);
+        console.log( obj.errors );
+        console.log('');
+    }
 
 })();
 
