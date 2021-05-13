@@ -3,10 +3,11 @@
 const axios     = require('axios').default;
 const cheerio   = require('cheerio');
 
-const url_manager         = require('./url');
-const item_manager        = require('./item');
-const transaction_manager = require('./transaction');
-const logger              = require('./logger');
+const logger        = require('./logger');
+const url_manager   = require('./url');
+const item_manager  = require('./item');
+const tx_manager    = require('./transaction');
+const block_manager = require('./block');
 
 class validator {
 
@@ -14,13 +15,15 @@ class validator {
 
     // public methods /////////////////////////////
 
-    async init() {
+    async check() {
         this.url.validate();
         await this._get_node_url();
         await this._get_item();
         await this._get_transaction();
         this.item.validate( this.public_key );
         this.transaction.validate();
+        await this._get_block();
+        await this.block.validate();
     }
 
     // private methods ////////////////////////////
@@ -67,15 +70,26 @@ class validator {
                 }
             })
             .catch( error => {
-                    logger('download transaction', false);
+                logger('download transaction', false);
                 throw `error downloading transaction: ${ error }`;
             });
-        this.transaction = new transaction_manager( transaction );
+        this.transaction = new tx_manager( transaction );
     }
 
-    _get_block() {} // include la ricevuta
-
-    _verify_block() {}
+    async _get_block() { // include la ricevuta
+        var block_url = this.node_url + '/block/sbt/' + this.transaction.id;
+        var block = await axios.get( block_url )
+            .then( response => {
+                logger('download block');
+                return response.data; 
+            })
+            .catch( error => {
+                console.log( error );
+                logger('download block', false);
+                throw `error downloading block: ${ error }`;
+            });
+        this.block = new block_manager( block, this.transaction.id );
+    }
 
     _extract_node_url( html ) {
         try {

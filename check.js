@@ -1,21 +1,18 @@
 ////////////////////////////////////////
 
-const data = require('./package.json');
+const data      = require('./package.json');
 const validator = require('./classes/validator');
 
-console.log(`
- ESSE-VERIFIER (v${data.version})
- ######################
-`);
+console.log();
+console.log(` ESSE-VERIFIER (v${data.version})`);
+console.log(' ######################');
+console.log();
 
 if ( process.argv.length === 3 ) {
     var item_url = process.argv[ 2 ];
 } else {
-    var error = `
-Error. Missing parameter.
-usage: check.js <item_url>
-    `;
-    console.log( error );
+    console.log(' Error. Missing parameter.');
+    console.log(' usage: check.js <item_url>\n');
     process.exit();
 }
 
@@ -23,18 +20,12 @@ usage: check.js <item_url>
 
     var obj = new validator( item_url );
     try {
-        await obj.init();
+        await obj.check();
     } catch ( error ) {
-        console.log(`
-###
-  Error: ${ error }
-###
-        `);
-        console.log( error );
+        console.log('\n ###');
+        console.log(`  Error: ${ error }`);
+        console.log(' ###');
     }
-
-
-
     console.log('');
 
 })();

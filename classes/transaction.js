@@ -1,8 +1,7 @@
 ////////////////////////////////////////
 
-const rsa       = require('node-rsa');
-const base64url = require('base64url');
-const hash      = require('hash.js')
+const rsa  = require('node-rsa');
+const hash = require('hash.js')
 
 const logger = require('./logger');
 
@@ -15,15 +14,11 @@ class transaction {
 
     // public methods /////////////////////////////
 
-
     validate() {
         try {
             var manager = new rsa();
-            //console.log( 'signature', this.id );
-            //console.log( 'string   ', this.original_string );
             manager.importKey( this.public_key );
-            //var b64sign = base64url.toBase64( this.id );
-            var check = manager.verify( this.original_string, this.id, 'utf8', 'base64' );
+            var check = manager.verify( this.original_string, this.signature, 'utf8', 'base64' );
         } catch ( error ) {
             logger('verify transaction signature', false);
             throw `error verifying transaction signature: ${ error }`;
@@ -37,6 +32,20 @@ class transaction {
 
     // private methods ////////////////////////////
 
+    // getters & setters //////////////////////////
+
+    get signature() {
+        return this.payload['signature'];
+    }
+
+    get id() {
+        return this.payload['txid'];
+    }
+
+    get public_key() {
+        return this.payload.pubKey;
+    }
+
     get original_string() {
         var keys = [];
         Object.keys( this.payload ).map( key => {
@@ -48,22 +57,14 @@ class transaction {
         var string = '';
         for ( var i = 0; i < keys.length; i++ ) {
             if ( typeof this.payload[ keys[ i ] ] === 'string' ) {
-                var match = this.payload[ keys[ i ] ].match( /^\d{4}\-\d{2}\-\d{2}T\d{2}:\d{2}:\d{2}\.\d{1,3}.{1,3}$/ );
+                // if the attribute is a string and it's a date we have to add double quotes
+                // becouse javascript add double quotes when date obj is stringified
+                var match = this.payload[ keys[ i ] ].match( /^\d{4}\-\d{2}\-\d{2}T\d{2}:\d{2}:\d{2}\.\d{1,3}.{1,5}$/ );
                 if ( match ) { string += `"${ this.payload[ keys[ i ] ] }"`; continue }
             }
             string += typeof this.payload[ keys[ i ] ] === 'object' ? JSON.stringify( this.payload[ keys[ i ] ] ) : this.payload[ keys[ i ] ];
         }
         return hash.sha256().update( string ).digest('hex');
-    }
-
-    // getters & setters //////////////////////////
-
-    get id() {
-        return this.payload['signature'];
-    }
-
-    get public_key() {
-        return this.payload.pubKey;
     }
 
 }

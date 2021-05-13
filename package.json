@@ -1,6 +1,6 @@
 {
   "name": "esse-verifier",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Esse Verifier",
   "main": "main.js",
   "scripts": {
@@ -19,8 +19,10 @@
   "dependencies": {
     "axios": "^0.21.1",
     "base64url": "^3.0.1",
+    "chainpoint-binary": "^5.0.1",
     "cheerio": "^1.0.0-rc.9",
     "hash.js": "^1.1.7",
+    "merkletreejs": "0.0.25",
     "node-rsa": "^1.0.2",
     "url": "^0.11.0",
     "valid-url": "^1.0.9"

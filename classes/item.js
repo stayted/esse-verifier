@@ -9,7 +9,7 @@ class item {
 
     constructor( payload ) {
         this.payload = payload;
-        this.excluded_fields = ['_id', '@id', '@updates', '@updated', '@update-description', 'items' ];
+        this.excluded_fields = ['_id', '@id', '@updates', '@updated', '@update-description' ];
     }
 
     // public methods /////////////////////////////
