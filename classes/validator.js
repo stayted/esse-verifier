@@ -39,7 +39,7 @@ class validator {
                 return response.data;
             })
             .catch( error => {
-                this.logger.p('download web page', false);
+                this.logger.p('download web page', false, error);
                 throw `error downloading viewer page: ${ error }`;
             });
         this._extract_node_url( html_page );
@@ -56,7 +56,7 @@ class validator {
                 }
             })
             .catch( error => {
-                    this.logger.p('download item', false);
+                this.logger.p('download item', false, error);
                 throw `error downloading item: ${ error }`;
             });
         this.item = new item_manager( item );
@@ -74,7 +74,7 @@ class validator {
                 }
             })
             .catch( error => {
-                this.logger.p('download transaction', false);
+                this.logger.p('download transaction', false, error);
                 throw `error downloading transaction: ${ error }`;
             });
         this.transaction = new tx_manager( transaction );
@@ -88,8 +88,7 @@ class validator {
                 return response.data; 
             })
             .catch( error => {
-                console.log( error );
-                this.logger.p('download block', false);
+                this.logger.p('download block', false, error);
                 throw `error downloading block: ${ error }`;
             });
         this.block = new block_manager( block, this.transaction.id );
