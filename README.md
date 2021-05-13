@@ -4,21 +4,23 @@
 
 ## Install
 
-### Stand Alone
+### Standalone
 
 ```
 git clone https://github.com/stayted/esse-verifier
 cd esse-verifier
-node check.js <url>
+node check.js <url_from_qrcode>
 ```
 
-### For use in script
+### Use it in your script
 
 Add to your package.json dependencies:
 
 `"esse-verifier": "git+https://github.com/stayted/esse-verifier.git"`
 
-`npm install`
+Install it:
+
+`npm install esse-verifier`
 
 Use it in your script:
 
