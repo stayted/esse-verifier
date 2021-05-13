@@ -14,9 +14,14 @@ node check.js <url_from_qrcode>
 
 ### Use it in your script
 
-Add to your package.json dependencies:
+Add it to your package.json dependencies:
 
-`"esse-verifier": "git+https://github.com/stayted/esse-verifier.git"`
+```
+  "dependencies": {
+    "esse-verifier": "git+https://github.com/stayted/esse-verifier.git",
+    [...]
+  },
+```
 
 Install it:
 
@@ -25,6 +30,7 @@ Install it:
 Use it in your script:
 
 ```
+
 const validator = require('esse-verifier');
   
 const url = '<url_from_qrcode>';
@@ -39,6 +45,7 @@ const url = '<url_from_qrcode>';
     console.log( 'response:', obj.response );
     console.log( 'errors:', obj.errors );
 })()
+
 ```
 
 ## Correct output (standalone usage)
