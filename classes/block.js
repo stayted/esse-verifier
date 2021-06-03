@@ -17,8 +17,8 @@ class block {
     // public methods /////////////////////////////
 
     async validate() {
-        this._verify_merkle_tree();
         this._verify_block_status();
+        this._verify_merkle_tree();
         await this._verify_btc_page_details();
         this._verify_receipt();
     }
@@ -45,7 +45,7 @@ class block {
             this.logger.p('verify block status');
         } else {
             this.logger.p('verify block status', false);
-            throw 'il blocco non è stato ancora notarizzato, verifica interrotta.';
+            throw 'block not notarized yet, have a coffee and wait something like a couple of hours';
         }
     }
 

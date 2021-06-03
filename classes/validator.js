@@ -52,6 +52,9 @@ class validator {
                     this.logger.p('download item');
                     return response.data[0];
                 } else {
+                    if ( response.data.length === 0 ) {
+                        throw `expected one item, received ${ response.data.length }. Try to wait a few minutes`;
+                    }
                     throw `expected one item, received ${ response.data.length }`;
                 }
             })
@@ -88,8 +91,12 @@ class validator {
                 return response.data; 
             })
             .catch( error => {
+                var message = error.response.data.hasOwnProperty('description') ? error.response.data.description : error;
+                if ( message === 'expected 1 block, found 0' ) {
+                    message += '. Try to wait a few minutes'
+                }
                 this.logger.p('download block', false, error);
-                throw `error downloading block: ${ error }`;
+                throw `error downloading block: ${ message }`;
             });
         this.block = new block_manager( block, this.transaction.id );
     }
